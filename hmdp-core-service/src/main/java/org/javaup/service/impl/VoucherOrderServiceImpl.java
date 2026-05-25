@@ -22,7 +22,6 @@ import org.javaup.entity.SeckillVoucher;
 import org.javaup.entity.UserInfo;
 import org.javaup.entity.Voucher;
 import org.javaup.entity.VoucherOrder;
-import org.javaup.entity.VoucherOrderRouter;
 import org.javaup.enums.BaseCode;
 import org.javaup.enums.BusinessType;
 import org.javaup.enums.LogType;
@@ -35,7 +34,6 @@ import org.javaup.kafka.redis.RedisVoucherData;
 import org.javaup.lua.SeckillVoucherDomain;
 import org.javaup.lua.SeckillVoucherOperate;
 import org.javaup.mapper.VoucherOrderMapper;
-import org.javaup.mapper.VoucherOrderRouterMapper;
 import org.javaup.message.MessageExtend;
 import org.javaup.model.SeckillVoucherFullModel;
 import org.javaup.redis.RedisCacheImpl;
@@ -43,7 +41,6 @@ import org.javaup.redis.RedisKeyBuild;
 import org.javaup.repeatexecutelimit.annotion.RepeatExecuteLimit;
 import org.javaup.service.ISeckillVoucherService;
 import org.javaup.service.IUserInfoService;
-import org.javaup.service.IVoucherOrderRouterService;
 import org.javaup.service.IVoucherOrderService;
 import org.javaup.service.IVoucherReconcileLogService;
 import org.javaup.service.IVoucherService;
@@ -118,19 +115,10 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     
     @Resource
     private RedisCacheImpl redisCache;
-    
-    @Resource
-    private IVoucherOrderRouterService voucherOrderRouterService;
-    
+
     @Resource
     private IUserInfoService userInfoService;
-    
-    @Resource
-    private VoucherOrderMapper voucherOrderMapper;
-    
-    @Resource
-    private VoucherOrderRouterMapper voucherOrderRouterMapper;
-    
+
     @Resource
     private RedisVoucherData redisVoucherData;
     
@@ -495,14 +483,6 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         voucherOrder.setVoucherId(messageBody.getVoucherId());
         voucherOrder.setCreateTime(LocalDateTimeUtil.now());
         save(voucherOrder);
-        VoucherOrderRouter voucherOrderRouter = new VoucherOrderRouter();
-        voucherOrderRouter.setId(snowflakeIdGenerator.nextId());
-        voucherOrderRouter.setOrderId(voucherOrder.getId());
-        voucherOrderRouter.setUserId(userId);
-        voucherOrderRouter.setVoucherId(voucherOrder.getVoucherId());
-        voucherOrderRouter.setCreateTime(LocalDateTimeUtil.now());
-        voucherOrderRouter.setUpdateTime(LocalDateTimeUtil.now());
-        voucherOrderRouterService.save(voucherOrderRouter);
         redisCache.set(RedisKeyBuild.createRedisKey(
                 RedisKeyManage.DB_SECKILL_ORDER_KEY,messageBody.getOrderId()),
                 voucherOrder,
@@ -528,14 +508,8 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         if (Objects.nonNull(voucherOrder)) {
             return voucherOrder.getId();
         }
-        VoucherOrderRouter voucherOrderRouter = 
-                voucherOrderRouterService.lambdaQuery()
-                        .eq(VoucherOrderRouter::getOrderId, getVoucherOrderDto.getOrderId())
-                        .one();
-        if (Objects.nonNull(voucherOrderRouter)) {
-            return voucherOrderRouter.getOrderId();
-        }
-        return null;
+        voucherOrder = getById(getVoucherOrderDto.getOrderId());
+        return Objects.nonNull(voucherOrder) ? voucherOrder.getId() : null;
     }
     
     @Override

@@ -16,11 +16,6 @@
     <description>黑马点评核心服务</description>
     <dependencies>
         <dependency>
-            <groupId>org.javaup</groupId>
-            <artifactId>hmdp-sharding</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
