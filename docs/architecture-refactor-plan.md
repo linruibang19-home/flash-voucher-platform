@@ -121,3 +121,5 @@ hmdp-plus-cloud
 1. Verify Gateway-to-Auth and Gateway-to-User traffic locally.
 2. Remove duplicated login/user endpoints from Core Service after route verification.
 3. Start Shop Service extraction for shop, shop type, cache, and GEO behavior.
+
+See `docs/local-routing-verification.md` for the current local routing matrix.
