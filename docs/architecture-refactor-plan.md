@@ -11,6 +11,7 @@ This project is being refactored from a single Spring Boot application into a cl
 - Gateway now provides static routing, request id propagation, access logs, and Redis-backed token checks.
 - Auth Service now owns the first extracted login-code and login-token issuing endpoints.
 - User Service now owns profile lookup, user info lookup, member-level update, and sign-in endpoints.
+- Core Service no longer exposes `/user` endpoints; it only retains local user query service support for blog/follow behavior.
 - Core Service still keeps its existing MVC login interceptors until Auth Service is split out.
 - Redis, Kafka, Redisson, Lua-based stock deduction, idempotency, and reconciliation remain part of the core design.
 
@@ -119,7 +120,7 @@ hmdp-plus-cloud
 ## Immediate Next Blocks
 
 1. Verify Gateway-to-Auth and Gateway-to-User traffic locally.
-2. Remove duplicated login/user endpoints from Core Service after route verification.
+2. Adapt Core Service authentication to trust Gateway-propagated user context.
 3. Start Shop Service extraction for shop, shop type, cache, and GEO behavior.
 
 See `docs/local-routing-verification.md` for the current local routing matrix.
