@@ -9,6 +9,7 @@ public final class ShopConstants {
     public static final long CACHE_SHOP_TTL_MINUTES = 30L;
     public static final long CACHE_NULL_TTL_MINUTES = 2L;
     public static final String SHOP_GEO_KEY = "shop:geo:";
+    public static final String SHOP_BLOOM_FILTER = "shop";
 
     private ShopConstants() {
     }

@@ -64,10 +64,6 @@ logging:
     dateformat: mm:ss.SSS
 bloom-filter:
   filters:
-    shop:
-      name: shop-id-bloom
-      expected-insertions: 50000
-      false-probability: 0.01
     voucher:
       name: voucher-id-bloom
       expected-insertions: 100000

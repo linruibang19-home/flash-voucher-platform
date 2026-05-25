@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import org.javaup.dto.Result;
+import org.javaup.handler.BloomFilterHandlerFactory;
 import org.javaup.shop.constant.ShopConstants;
 import org.javaup.shop.entity.Shop;
 import org.javaup.shop.mapper.ShopMapper;
@@ -14,6 +15,7 @@ import org.javaup.toolkit.SnowflakeIdGenerator;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.GeoResult;
 import org.springframework.data.geo.GeoResults;
+import org.springframework.data.geo.Point;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.domain.geo.GeoReference;
@@ -41,10 +43,15 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements Sh
     @Resource
     private SnowflakeIdGenerator snowflakeIdGenerator;
 
+    @Resource
+    private BloomFilterHandlerFactory bloomFilterHandlerFactory;
+
     @Override
     public Result<Long> saveShop(Shop shop) {
         shop.setId(snowflakeIdGenerator.nextId());
         save(shop);
+        bloomFilterHandlerFactory.get(ShopConstants.SHOP_BLOOM_FILTER).add(String.valueOf(shop.getId()));
+        refreshShopGeo(shop);
         return Result.ok(shop.getId());
     }
 
@@ -58,6 +65,10 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements Sh
     }
 
     private Shop queryShopWithCache(Long id) {
+        if (!bloomFilterHandlerFactory.get(ShopConstants.SHOP_BLOOM_FILTER).contains(String.valueOf(id))) {
+            return null;
+        }
+
         String shopKey = ShopConstants.CACHE_SHOP_KEY + id;
         String cachedShop = stringRedisTemplate.opsForValue().get(shopKey);
         if (StringUtils.hasText(cachedShop)) {
@@ -93,6 +104,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements Sh
                 ShopConstants.CACHE_SHOP_KEY + id,
                 ShopConstants.CACHE_SHOP_NULL_KEY + id
         ));
+        refreshShopGeo(shop);
         return Result.ok();
     }
 
@@ -162,5 +174,15 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements Sh
         } catch (JsonProcessingException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    private void refreshShopGeo(Shop shop) {
+        if (shop.getTypeId() == null || shop.getX() == null || shop.getY() == null) {
+            return;
+        }
+        stringRedisTemplate.opsForGeo()
+                .add(ShopConstants.SHOP_GEO_KEY + shop.getTypeId(),
+                        new Point(shop.getX(), shop.getY()),
+                        shop.getId().toString());
     }
 }

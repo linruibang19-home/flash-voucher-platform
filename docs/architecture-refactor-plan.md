@@ -11,8 +11,8 @@ This project is being refactored from a single Spring Boot application into a cl
 - Gateway now provides static routing, request id propagation, access logs, and Redis-backed token checks.
 - Auth Service now owns the first extracted login-code and login-token issuing endpoints.
 - User Service now owns profile lookup, user info lookup, member-level update, and sign-in endpoints.
-- Shop Service now owns shop, shop-type, cache-aside, empty-value cache, and GEO query endpoints.
-- Core Service no longer exposes `/user`, `/shop`, or `/shop-type` endpoints; it only retains local user and shop query service support for existing blog/follow/cache-init behavior.
+- Shop Service now owns shop, shop-type, cache-aside, empty-value cache, Bloom filter warmup, and GEO index warmup.
+- Core Service no longer exposes `/user`, `/shop`, or `/shop-type` endpoints; it only retains local user and shop query service support for existing blog/follow behavior.
 - Core Service now prefers Gateway-propagated `X-User-Id` for user context and keeps Redis token lookup as a compatibility fallback.
 - Redis, Kafka, Redisson, Lua-based stock deduction, idempotency, and reconciliation remain part of the core design.
 
@@ -70,7 +70,7 @@ hmdp-plus-cloud
 ### Shop Service
 
 - Own shop and shop-type data.
-- Keep Redis cache, empty-value cache, and GEO query logic. Bloom filter warmup can be added back after the service boundary is stable.
+- Keep Redis cache, empty-value cache, Bloom filter warmup, and GEO query logic.
 
 ### Blog Service
 
@@ -130,7 +130,7 @@ hmdp-plus-cloud
 ## Immediate Next Blocks
 
 1. Verify Gateway-to-Auth, Gateway-to-User, and Gateway-to-Shop traffic locally.
-2. Move shop cache/Bloom/GEO warmup jobs out of Core Service.
-3. Start Blog Service extraction.
+2. Start Blog Service extraction.
+3. Move Blog/Follow endpoints out of Core Service.
 
 See `docs/local-routing-verification.md` for the current local routing matrix.
