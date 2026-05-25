@@ -2,61 +2,86 @@ package org.javaup.utils;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import org.javaup.dto.UserDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.javaup.dto.UserDTO;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static org.javaup.utils.RedisConstants.LOGIN_USER_KEY;
 import static org.javaup.utils.RedisConstants.LOGIN_USER_TTL;
 
 /**
- * @description: token过滤器-黑马点评普通版本和plus版本使用
+ * @description: token and gateway user-context interceptor
  * @maintainer: lrb
  **/
 public class RefreshTokenInterceptor implements HandlerInterceptor {
 
-    private StringRedisTemplate stringRedisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 
     public RefreshTokenInterceptor(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 1.获取请求头中的token
-        String token = request.getHeader("authorization");
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        UserDTO gatewayUser = resolveGatewayUser(request);
+        if (Objects.nonNull(gatewayUser)) {
+            UserHolder.saveUser(gatewayUser);
+            fillUserFromTokenIfPresent(request);
+            return true;
+        }
+        String token = request.getHeader(GatewayHeaders.AUTHORIZATION);
         if (StrUtil.isBlank(token)) {
             return true;
         }
-        // 2.基于TOKEN获取redis中的用户
-        String key  = LOGIN_USER_KEY + token;
-        Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(key);
-        // 3.判断用户是否存在
-        if (userMap.isEmpty()) {
-            return true;
+        loadUserFromToken(token);
+        return true;
+    }
+
+    private UserDTO resolveGatewayUser(HttpServletRequest request) {
+        String userId = request.getHeader(GatewayHeaders.USER_ID);
+        if (StrUtil.isBlank(userId)) {
+            return null;
         }
-        // 5.将查询到的hash数据转为UserDTO
+        try {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(Long.valueOf(userId));
+            return userDTO;
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
+    private void fillUserFromTokenIfPresent(HttpServletRequest request) {
+        String token = request.getHeader(GatewayHeaders.AUTHORIZATION);
+        if (StrUtil.isBlank(token)) {
+            return;
+        }
+        loadUserFromToken(token);
+    }
+
+    private void loadUserFromToken(String token) {
+        String key = LOGIN_USER_KEY + token;
+        Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(key);
+        if (userMap.isEmpty()) {
+            return;
+        }
         UserDTO userDTO = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);
-        // 6.存在，保存用户信息到 ThreadLocal
         UserHolder.saveUser(userDTO);
-        // 7.刷新token有效期（按秒设置，避免 Redisson pExpire 递归问题）
         stringRedisTemplate.expire(
                 key,
                 TimeUnit.SECONDS.convert(LOGIN_USER_TTL, TimeUnit.MINUTES),
                 TimeUnit.SECONDS
         );
-        // 8.放行
-        return true;
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        // 移除用户
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         UserHolder.removeUser();
     }
 }

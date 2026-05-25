@@ -12,7 +12,7 @@ This project is being refactored from a single Spring Boot application into a cl
 - Auth Service now owns the first extracted login-code and login-token issuing endpoints.
 - User Service now owns profile lookup, user info lookup, member-level update, and sign-in endpoints.
 - Core Service no longer exposes `/user` endpoints; it only retains local user query service support for blog/follow behavior.
-- Core Service still keeps its existing MVC login interceptors until Auth Service is split out.
+- Core Service now prefers Gateway-propagated `X-User-Id` for user context and keeps Redis token lookup as a compatibility fallback.
 - Redis, Kafka, Redisson, Lua-based stock deduction, idempotency, and reconciliation remain part of the core design.
 
 ## Target Architecture
