@@ -9,6 +9,7 @@ This project is being refactored from a single Spring Boot application into a cl
 - Voucher orders are stored directly in `tb_voucher_order`.
 - The order router table and related code have been removed.
 - Gateway now provides static routing, request id propagation, access logs, and Redis-backed token checks.
+- Auth Service now owns the first extracted login-code and login-token issuing endpoints.
 - Core Service still keeps its existing MVC login interceptors until Auth Service is split out.
 - Redis, Kafka, Redisson, Lua-based stock deduction, idempotency, and reconciliation remain part of the core design.
 
@@ -116,6 +117,6 @@ hmdp-plus-cloud
 
 ## Immediate Next Blocks
 
-1. Extract API contracts and shared DTOs from `hmdp-core-service`.
-2. Introduce Gateway skeleton and route the existing monolith through it.
-3. Move login/session behavior into an Auth module or service.
+1. Complete Gateway-to-Auth verification for `/user/code` and `/user/login`.
+2. Move the remaining session/logout behavior into Auth Service.
+3. Start User Service extraction for profile, member level, and sign-in behavior.
