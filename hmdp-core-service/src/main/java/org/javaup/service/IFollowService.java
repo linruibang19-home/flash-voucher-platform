@@ -1,0 +1,18 @@
+package org.javaup.service;
+
+import org.javaup.dto.Result;
+import org.javaup.entity.Follow;
+import com.baomidou.mybatisplus.extension.service.IService;
+
+/**
+ * @description: 关注接口
+ * @maintainer: lrb
+ **/
+public interface IFollowService extends IService<Follow> {
+
+    Result follow(Long followUserId, Boolean isFollow);
+
+    Result isFollow(Long followUserId);
+
+    Result followCommons(Long id);
+}

@@ -1,0 +1,12 @@
+package org.javaup.mapper;
+
+import org.javaup.entity.Shop;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+/**
+ * @description: 商铺 Mapper
+ * @maintainer: lrb
+ **/
+public interface ShopMapper extends BaseMapper<Shop> {
+
+}
