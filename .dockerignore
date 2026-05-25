@@ -1,0 +1,10 @@
+.git
+.gitignore
+.gitattributes
+**/target/
+**/node_modules/
+frontend/
+docs/
+*.md
+infra/
+sql/

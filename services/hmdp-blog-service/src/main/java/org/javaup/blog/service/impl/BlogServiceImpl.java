@@ -7,7 +7,6 @@ import jakarta.annotation.Resource;
 import org.javaup.blog.constant.BlogConstants;
 import org.javaup.blog.entity.Blog;
 import org.javaup.blog.entity.Follow;
-import org.javaup.blog.entity.User;
 import org.javaup.blog.mapper.BlogMapper;
 import org.javaup.blog.service.BlogService;
 import org.javaup.blog.service.FollowService;
@@ -93,14 +92,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
             return Result.ok(Collections.emptyList());
         }
         List<Long> ids = top5.stream().map(Long::valueOf).toList();
-        String idStr = StrUtil.join(",", ids);
-        List<UserDTO> userDTOS = userLookupService.query()
-                .in("id", ids)
-                .last("ORDER BY FIELD(id," + idStr + ")")
-                .list()
-                .stream()
-                .map(userLookupService::toUserDTO)
-                .toList();
+        // listUserDTOsByIds 内部按 ids 顺序返回，保留点赞时间排序
+        List<UserDTO> userDTOS = userLookupService.listUserDTOsByIds(ids);
         return Result.ok(userDTOS);
     }
 
@@ -174,7 +167,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     }
 
     private void queryBlogUser(Blog blog) {
-        User user = userLookupService.getById(blog.getUserId());
+        UserDTO user = userLookupService.getUserById(blog.getUserId());
         if (user != null) {
             blog.setName(user.getNickName());
             blog.setIcon(user.getIcon());

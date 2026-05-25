@@ -22,6 +22,15 @@
         </dependency>
         <dependency>
             <groupId>org.javaup</groupId>
+            <artifactId>hmdp-api-user</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.javaup</groupId>
             <artifactId>hmdp-id-generator-framework</artifactId>
             <version>${revision}</version>
         </dependency>

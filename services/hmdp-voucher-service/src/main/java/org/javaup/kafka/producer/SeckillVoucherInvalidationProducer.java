@@ -1,20 +1,17 @@
 package org.javaup.kafka.producer;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.javaup.AbstractProducerHandler;
 import org.javaup.kafka.message.SeckillVoucherInvalidationMessage;
 import org.javaup.message.MessageExtend;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.support.PropertiesLoaderSupport;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
-
-import io.micrometer.core.instrument.MeterRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +28,6 @@ public class SeckillVoucherInvalidationProducer extends AbstractProducerHandler<
     private final static String RETRY_COUNT = "retryCount";
     
     private final static String DLQ = ".DLQ";
-    
-    @Autowired
-    private PropertiesLoaderSupport propertiesLoaderSupport;
     
     public SeckillVoucherInvalidationProducer(final KafkaTemplate<String, MessageExtend<SeckillVoucherInvalidationMessage>> kafkaTemplate) {
         super(kafkaTemplate);

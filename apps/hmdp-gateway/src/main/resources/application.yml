@@ -15,25 +15,33 @@ spring:
         webflux:
           routes:
             - id: hmdp-auth-service
-              uri: http://localhost:8081
+              uri: ${HMDP_AUTH_SERVICE_URL:http://localhost:8081}
               predicates:
                 - Path=/user/code,/user/login,/user/logout,/user/me
             - id: hmdp-user-service
-              uri: http://localhost:8082
+              uri: ${HMDP_USER_SERVICE_URL:http://localhost:8082}
               predicates:
                 - Path=/user/info/**,/user/level/update,/user/sign,/user/sign/count,/user/{id}
             - id: hmdp-shop-service
-              uri: http://localhost:8083
+              uri: ${HMDP_SHOP_SERVICE_URL:http://localhost:8083}
               predicates:
                 - Path=/shop/**,/shop-type/**
             - id: hmdp-blog-service
-              uri: http://localhost:8084
+              uri: ${HMDP_BLOG_SERVICE_URL:http://localhost:8084}
               predicates:
                 - Path=/blog/**,/follow/**,/blog-comments/**
             - id: hmdp-voucher-service
-              uri: http://localhost:8085
+              uri: ${HMDP_VOUCHER_SERVICE_URL:http://localhost:8085}
               predicates:
-                - Path=/voucher/**,/voucher-order/**,/upload/**,/test/**
+                - Path=/voucher/**,/voucher-order/seckill/**,/upload/**,/test/**
+            - id: hmdp-order-service
+              uri: ${HMDP_ORDER_SERVICE_URL:http://localhost:8086}
+              predicates:
+                - Path=/voucher-order/get/**,/voucher-order/cancel
+            - id: hmdp-job-service
+              uri: ${HMDP_JOB_SERVICE_URL:http://localhost:8088}
+              predicates:
+                - Path=/job/**
 
 management:
   endpoints:
@@ -57,3 +65,4 @@ hmdp:
         - /upload/**
         - /test/**
         - /actuator/**
+        - /internal/**

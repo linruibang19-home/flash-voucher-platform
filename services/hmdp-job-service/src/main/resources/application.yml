@@ -1,0 +1,28 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: hmdp-job-service
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+
+# 服务间调用地址
+hmdp:
+  voucher-service:
+    url: http://localhost:8085
+  order-service:
+    url: http://localhost:8086
+
+prefix:
+  distinction:
+    name: hmdp
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus

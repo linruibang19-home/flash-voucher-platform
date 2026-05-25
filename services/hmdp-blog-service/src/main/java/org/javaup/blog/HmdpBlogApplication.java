@@ -3,7 +3,9 @@ package org.javaup.blog;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
+@EnableFeignClients(basePackages = "org.javaup.api.user")
 @MapperScan("org.javaup.blog.mapper")
 @SpringBootApplication
 public class HmdpBlogApplication {

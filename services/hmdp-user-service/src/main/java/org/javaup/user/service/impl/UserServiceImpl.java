@@ -5,12 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
 import org.javaup.dto.Result;
 import org.javaup.dto.UserDTO;
+import org.javaup.dto.UserInfoDTO;
 import org.javaup.user.constant.UserRedisConstants;
 import org.javaup.user.entity.User;
 import org.javaup.user.entity.UserInfo;
 import org.javaup.user.mapper.UserInfoMapper;
 import org.javaup.user.mapper.UserMapper;
 import org.javaup.user.service.UserService;
+
+import java.util.Collections;
+import java.util.List;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -18,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -44,15 +47,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result<UserInfo> queryUserInfoByUserId(Long userId) {
+    public Result<List<UserDTO>> queryUserBatch(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Result.ok(Collections.emptyList());
+        }
+        List<UserDTO> list = userMapper.selectBatchIds(ids).stream()
+                .map(u -> BeanUtil.copyProperties(u, UserDTO.class))
+                .toList();
+        return Result.ok(list);
+    }
+
+    @Override
+    public Result<UserInfoDTO> queryUserInfoByUserId(Long userId) {
         UserInfo info = userInfoMapper.selectOne(
                 new LambdaQueryWrapper<UserInfo>().eq(UserInfo::getUserId, userId));
         if (info == null) {
             return Result.ok();
         }
-        info.setCreateTime(null);
-        info.setUpdateTime(null);
-        return Result.ok(info);
+        return Result.ok(BeanUtil.copyProperties(info, UserInfoDTO.class));
     }
 
     @Override

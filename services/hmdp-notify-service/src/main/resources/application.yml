@@ -1,0 +1,39 @@
+server:
+  port: 8087
+
+spring:
+  application:
+    name: hmdp-notify-service
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+
+# 告警通知配置（目前为 stub 实现，生产环境替换为真实 SMS/Push SDK）
+seckill:
+  notify:
+    auto-issue:
+      sms:
+        enabled: false
+        to: ""
+      app:
+        enabled: false
+      dedup:
+        window-seconds: 1800
+  rollback:
+    alert:
+      sms:
+        enabled: false
+        to: ""
+      email:
+        enabled: false
+        to: ""
+      dedup:
+        window-seconds: 300
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
