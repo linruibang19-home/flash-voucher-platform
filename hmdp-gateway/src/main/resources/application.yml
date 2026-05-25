@@ -18,6 +18,10 @@ spring:
               uri: http://localhost:8081
               predicates:
                 - Path=/user/code,/user/login,/user/logout,/user/me
+            - id: hmdp-user-service
+              uri: http://localhost:8082
+              predicates:
+                - Path=/user/info/**,/user/level/update,/user/sign,/user/sign/count,/user/{id}
             - id: hmdp-core-service
               uri: http://localhost:8085
               predicates:
