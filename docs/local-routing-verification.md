@@ -7,11 +7,11 @@ This document tracks the temporary routing setup while the monolith is being spl
 Start the services in separate terminals:
 
 ```bash
-mvn -pl hmdp-auth-service spring-boot:run
-mvn -pl hmdp-user-service spring-boot:run
-mvn -pl hmdp-shop-service spring-boot:run
-mvn -pl hmdp-core-service spring-boot:run
-mvn -pl hmdp-gateway spring-boot:run
+mvn -pl :hmdp-auth-service spring-boot:run
+mvn -pl :hmdp-user-service spring-boot:run
+mvn -pl :hmdp-shop-service spring-boot:run
+mvn -pl :hmdp-core-service spring-boot:run
+mvn -pl :hmdp-gateway spring-boot:run
 ```
 
 Default ports:

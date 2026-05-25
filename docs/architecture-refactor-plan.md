@@ -20,22 +20,31 @@ This project is being refactored from a single Spring Boot application into a cl
 
 ```text
 hmdp-plus-cloud
-├─ hmdp-gateway
-├─ hmdp-auth-service
-├─ hmdp-user-service
-├─ hmdp-shop-service
-├─ hmdp-blog-service
-├─ hmdp-voucher-service
-├─ hmdp-order-service
-├─ hmdp-notify-service
-├─ hmdp-job-service
-├─ hmdp-common
-├─ hmdp-api
-├─ hmdp-redis-tool-framework
-├─ hmdp-redisson-framework
-├─ hmdp-mq-framework
-├─ hmdp-id-generator-framework
-└─ hmdp-vue3
+├─ apps
+│  └─ hmdp-gateway
+├─ services
+│  ├─ hmdp-auth-service
+│  ├─ hmdp-user-service
+│  ├─ hmdp-shop-service
+│  ├─ hmdp-core-service
+│  ├─ hmdp-blog-service
+│  ├─ hmdp-voucher-service
+│  ├─ hmdp-order-service
+│  ├─ hmdp-notify-service
+│  └─ hmdp-job-service
+├─ shared
+│  ├─ hmdp-common
+│  ├─ hmdp-parameter
+│  └─ hmdp-api
+├─ frameworks
+│  ├─ hmdp-redis-tool-framework
+│  ├─ hmdp-redisson-framework
+│  ├─ hmdp-mq-framework
+│  └─ hmdp-id-generator-framework
+├─ frontend
+│  └─ hmdp-vue3
+├─ docs
+└─ sql
 ```
 
 ## Service Boundaries

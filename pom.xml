@@ -26,22 +26,21 @@
 
     <name>${project.artifactId}</name>
     <description>
-        🔥 🔥 热门推荐 🔥 🔥将黑马点评进行完全地重构升级，围绕优惠券秒杀与热点查询，补齐高并发稳定性、动态令牌、限流、消息可靠性与数据一致性闭环，并添加订阅通知、候补排队等新亮点功能，解决烂大街和亮点不足问题！并打造成真正企业级别实战项目，全面工程化落地。
-    </description>
+        妫ｅ啯鏆?妫ｅ啯鏆?闁绘埈鍙冨Λ顒勫箳閵娿劌绀?妫ｅ啯鏆?妫ｅ啯鏆夐悘蹇撴缁附銇欓鍌氫化閻犲洤瀚换妯兼偘鐏炵晫鏆氶柛蹇嬪妼濠€鎾煂瀹ュ棛鈧垶宕￠崶鈺呯崜闁挎稑鑻ú璺ㄧ磼閺囨氨鍠橀柟顖滃Т閸╂粎绮旈幒鎾寸祷濞戞挸娴烽崕褰掓倷鐟欏嫮鍙€閻犲浂婢佺槐婵堟偘閵夆晝绉峰Δ鍌浢懟鐔煎矗閹寸妼鏃傗偓瑙勭閳ь儸浣插亾娴ｇ袟闁诡兛妞掗幎銈夋偋鐏炵儵鍋撴笟鈧鍝劽规担纰樺亾娴ｅ湱啸闁诡収鍨拌ぐ鏌ユ閻樻枼鍋撹缁楀矂寮悧鍫濈ウ濞戞挴鍋撻柤宄扮摠閳ь儸鍥紨闁绘粠鍨界槐婵嬬嵁閼搁潧娼戦柛鏃傚Ь椤撳綊姊奸崨绮瑰亾濮樿京鍙€闁靛棔绀侀埀顒佺懆钘熼柟鐑樺浮濡诧妇绮垫径瀣厐濞存粠鍠氶崑锝夊礉閻旇鍘撮柨娑樼焷琚欓柛鎰－閸庡本寰勮椤㈡粓宕仦鐓庣槰闁绘劙鈧稓鐟濋悺鎺撳▕濡埖锛愬鍫㈢＜妤犵偠鍩栨晶锕傛焻閻樺啿鐏囬柣顏嗗枑椤掓粍瀵兼担椋庣懝缂佺嫏鍐ㄧ劶閻庡湱鍋為崹顒併亜閸︻厽绐楅柨娑樿嫰閸欏繘妫冮姀鐘辩矗缂佸顑呯€垫煡鎷冮挊澶嬪嬀闁?    </description>
 
     <modules>
-        <module>hmdp-common</module>
-        <module>hmdp-api</module>
-        <module>hmdp-gateway</module>
-        <module>hmdp-auth-service</module>
-        <module>hmdp-user-service</module>
-        <module>hmdp-shop-service</module>
-        <module>hmdp-core-service</module>
-        <module>hmdp-redisson-framework</module>
-        <module>hmdp-redis-tool-framework</module>
-        <module>hmdp-id-generator-framework</module>
-        <module>hmdp-mq-framework</module>
-        <module>hmdp-parameter</module>
+        <module>apps/hmdp-gateway</module>
+        <module>services/hmdp-auth-service</module>
+        <module>services/hmdp-user-service</module>
+        <module>services/hmdp-shop-service</module>
+        <module>services/hmdp-core-service</module>
+        <module>shared/hmdp-common</module>
+        <module>shared/hmdp-parameter</module>
+        <module>shared/hmdp-api</module>
+        <module>frameworks/hmdp-redisson-framework</module>
+        <module>frameworks/hmdp-redis-tool-framework</module>
+        <module>frameworks/hmdp-id-generator-framework</module>
+        <module>frameworks/hmdp-mq-framework</module>
     </modules>
 
     <properties>
@@ -131,7 +130,7 @@
                 <artifactId>maven-source-plugin</artifactId>
                 <version>${maven-source.version}</version>
                 <configuration>
-                    <!--install、deploy时会上传源码jar包到仓库，默认是true-->
+                    <!--install闁靛棔榫歟ploy闁哄啯婀圭槐鐗堢▔婵犱胶鐐婃繝褎鍔楅悥娓廰r闁告牕鎳庨崺灞剧閹惧磭姘ㄩ柨娑樼焸缁垳鎷嬮妶鍡樞rue-->
                     <attach>true</attach>
                 </configuration>
                 <executions>
