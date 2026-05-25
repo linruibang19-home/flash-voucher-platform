@@ -8,6 +8,8 @@ This project is being refactored from a single Spring Boot application into a cl
 - The application now uses a single MySQL database named `hmdp`.
 - Voucher orders are stored directly in `tb_voucher_order`.
 - The order router table and related code have been removed.
+- Gateway now provides static routing, request id propagation, access logs, and Redis-backed token checks.
+- Core Service still keeps its existing MVC login interceptors until Auth Service is split out.
 - Redis, Kafka, Redisson, Lua-based stock deduction, idempotency, and reconciliation remain part of the core design.
 
 ## Target Architecture
@@ -117,4 +119,3 @@ hmdp-plus-cloud
 1. Extract API contracts and shared DTOs from `hmdp-core-service`.
 2. Introduce Gateway skeleton and route the existing monolith through it.
 3. Move login/session behavior into an Auth module or service.
-
