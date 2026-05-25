@@ -3,7 +3,7 @@ package org.javaup.dto;
 import lombok.Data;
 
 /**
- * @description: 登录-入参
+ * @description: 鐧诲綍-鍏ュ弬
  * @maintainer: lrb
  **/
 @Data

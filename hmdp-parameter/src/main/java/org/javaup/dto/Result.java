@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import org.javaup.enums.BaseCode;
 
 /**
- * @description: 结果
+ * @description: 缁撴灉
  * @maintainer: lrb
  **/
 @Data
@@ -32,7 +32,7 @@ public class Result<T> {
     public static <T> Result<T> fail(){
         Result<T> result = new Result<T>();
         result.setSuccess(false);
-        result.setErrorMsg("系统错误，请稍后重试!");
+        result.setErrorMsg("绯荤粺閿欒锛岃绋嶅悗閲嶈瘯!");
         return result;
     }
     public static <T> Result<T> fail(String errorMsg){
