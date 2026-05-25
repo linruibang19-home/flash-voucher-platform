@@ -35,6 +35,7 @@
         <module>hmdp-gateway</module>
         <module>hmdp-auth-service</module>
         <module>hmdp-user-service</module>
+        <module>hmdp-shop-service</module>
         <module>hmdp-core-service</module>
         <module>hmdp-redisson-framework</module>
         <module>hmdp-redis-tool-framework</module>

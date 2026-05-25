@@ -22,10 +22,14 @@ spring:
               uri: http://localhost:8082
               predicates:
                 - Path=/user/info/**,/user/level/update,/user/sign,/user/sign/count,/user/{id}
+            - id: hmdp-shop-service
+              uri: http://localhost:8083
+              predicates:
+                - Path=/shop/**,/shop-type/**
             - id: hmdp-core-service
               uri: http://localhost:8085
               predicates:
-                - Path=/shop/**,/shop-type/**,/blog/**,/follow/**,/voucher/**,/voucher-order/**,/upload/**,/test/**
+                - Path=/blog/**,/follow/**,/voucher/**,/voucher-order/**,/upload/**,/test/**
 
 management:
   endpoints:

@@ -9,6 +9,7 @@ Start the services in separate terminals:
 ```bash
 mvn -pl hmdp-auth-service spring-boot:run
 mvn -pl hmdp-user-service spring-boot:run
+mvn -pl hmdp-shop-service spring-boot:run
 mvn -pl hmdp-core-service spring-boot:run
 mvn -pl hmdp-gateway spring-boot:run
 ```
@@ -18,6 +19,7 @@ Default ports:
 - Gateway: `8080`
 - Auth Service: `8081`
 - User Service: `8082`
+- Shop Service: `8083`
 - Core Service: `8085`
 
 ## Current Gateway Routes
@@ -37,10 +39,13 @@ User Service:
 - `POST /user/sign`
 - `GET /user/sign/count`
 
-Core Service:
+Shop Service:
 
 - `/shop/**`
 - `/shop-type/**`
+
+Core Service:
+
 - `/blog/**`
 - `/follow/**`
 - `/voucher/**`
@@ -48,7 +53,7 @@ Core Service:
 - `/upload/**`
 - `/test/**`
 
-There is intentionally no `/user/**` fallback route to Core Service. Missing user routes should fail fast instead of silently using the old monolith endpoint.
+There is intentionally no `/user/**`, `/shop/**`, or `/shop-type/**` fallback route to Core Service. Missing extracted routes should fail fast instead of silently using the old monolith endpoint.
 
 ## Smoke Test Flow
 
@@ -73,7 +78,9 @@ curl "http://localhost:8080/user/me" -H "authorization: <token>"
 curl "http://localhost:8080/user/1" -H "authorization: <token>"
 curl -X POST "http://localhost:8080/user/sign" -H "authorization: <token>"
 curl "http://localhost:8080/user/sign/count" -H "authorization: <token>"
+curl "http://localhost:8080/shop-type/list"
+curl "http://localhost:8080/shop/1"
+curl "http://localhost:8080/shop/of/type?typeId=1&current=1"
 ```
 
 Gateway should add `X-Request-Id` and `X-User-Id` to downstream requests after authentication.
-

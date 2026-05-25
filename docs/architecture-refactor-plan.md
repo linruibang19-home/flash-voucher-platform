@@ -11,7 +11,8 @@ This project is being refactored from a single Spring Boot application into a cl
 - Gateway now provides static routing, request id propagation, access logs, and Redis-backed token checks.
 - Auth Service now owns the first extracted login-code and login-token issuing endpoints.
 - User Service now owns profile lookup, user info lookup, member-level update, and sign-in endpoints.
-- Core Service no longer exposes `/user` endpoints; it only retains local user query service support for blog/follow behavior.
+- Shop Service now owns shop, shop-type, cache-aside, empty-value cache, and GEO query endpoints.
+- Core Service no longer exposes `/user`, `/shop`, or `/shop-type` endpoints; it only retains local user and shop query service support for existing blog/follow/cache-init behavior.
 - Core Service now prefers Gateway-propagated `X-User-Id` for user context and keeps Redis token lookup as a compatibility fallback.
 - Redis, Kafka, Redisson, Lua-based stock deduction, idempotency, and reconciliation remain part of the core design.
 
@@ -60,7 +61,7 @@ hmdp-plus-cloud
 ### Shop Service
 
 - Own shop and shop-type data.
-- Keep Redis cache, empty-value cache, Bloom filter, and GEO query logic.
+- Keep Redis cache, empty-value cache, and GEO query logic. Bloom filter warmup can be added back after the service boundary is stable.
 
 ### Blog Service
 
@@ -102,8 +103,8 @@ hmdp-plus-cloud
 2. Clean module dependencies and move shared contracts into common/API modules.
 3. Introduce service registry and externalized configuration.
 4. Add Gateway and move authentication to Auth Service.
-5. Split Shop Service first because it is mostly query-oriented and low risk.
-6. Split User Service and expose member-level APIs.
+5. Split User Service and expose member-level APIs.
+6. Split Shop Service because it is mostly query-oriented and low risk.
 7. Split Blog Service.
 8. Split Voucher Service while preserving Redis Lua deduction behavior.
 9. Split Order Service and move Kafka order creation consumption into it.
@@ -119,8 +120,8 @@ hmdp-plus-cloud
 
 ## Immediate Next Blocks
 
-1. Verify Gateway-to-Auth and Gateway-to-User traffic locally.
-2. Adapt Core Service authentication to trust Gateway-propagated user context.
-3. Start Shop Service extraction for shop, shop type, cache, and GEO behavior.
+1. Verify Gateway-to-Auth, Gateway-to-User, and Gateway-to-Shop traffic locally.
+2. Move shop cache/Bloom/GEO warmup jobs out of Core Service.
+3. Start Blog Service extraction.
 
 See `docs/local-routing-verification.md` for the current local routing matrix.
