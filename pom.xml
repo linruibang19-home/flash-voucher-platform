@@ -34,7 +34,7 @@
         <module>services/hmdp-user-service</module>
         <module>services/hmdp-shop-service</module>
         <module>services/hmdp-blog-service</module>
-        <module>services/hmdp-core-service</module>
+        <module>services/hmdp-voucher-service</module>
         <module>shared/hmdp-common</module>
         <module>shared/hmdp-parameter</module>
         <module>shared/hmdp-api</module>

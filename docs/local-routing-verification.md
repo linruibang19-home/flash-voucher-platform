@@ -11,7 +11,7 @@ mvn -pl :hmdp-auth-service spring-boot:run
 mvn -pl :hmdp-user-service spring-boot:run
 mvn -pl :hmdp-shop-service spring-boot:run
 mvn -pl :hmdp-blog-service spring-boot:run
-mvn -pl :hmdp-core-service spring-boot:run
+mvn -pl :hmdp-voucher-service spring-boot:run
 mvn -pl :hmdp-gateway spring-boot:run
 ```
 
@@ -22,7 +22,7 @@ Default ports:
 - User Service: `8082`
 - Shop Service: `8083`
 - Blog Service: `8084`
-- Core Service: `8085`
+- Voucher Service: `8085`
 
 ## Current Gateway Routes
 
@@ -52,14 +52,14 @@ Blog Service:
 - `/follow/**`
 - `/blog-comments/**`
 
-Core Service:
+Voucher Service:
 
 - `/voucher/**`
 - `/voucher-order/**`
 - `/upload/**`
 - `/test/**`
 
-There is intentionally no `/user/**`, `/shop/**`, `/shop-type/**`, `/blog/**`, or `/follow/**` fallback route to Core Service. Missing extracted routes should fail fast instead of silently using the old monolith endpoint.
+There is intentionally no `/user/**`, `/shop/**`, `/shop-type/**`, `/blog/**`, or `/follow/**` fallback route to Voucher Service. Missing extracted routes should fail fast instead of silently using the wrong service.
 
 ## Smoke Test Flow
 

@@ -25,7 +25,7 @@ import static org.javaup.utils.RedisConstants.CACHE_SHOP_KEY;
 import static org.javaup.utils.RedisConstants.SHOP_GEO_KEY;
 
 @SpringBootTest
-class HmDianPingApplicationTests {
+class HmdpVoucherApplicationTests {
 
     @Resource
     private CacheClient cacheClient;

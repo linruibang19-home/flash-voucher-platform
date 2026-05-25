@@ -20,6 +20,7 @@ sql/         Database schema and seed SQL.
 - `services/hmdp-auth-service`
 - `services/hmdp-user-service`
 - `services/hmdp-shop-service`
-- `services/hmdp-core-service`
+- `services/hmdp-blog-service`
+- `services/hmdp-voucher-service`
 
 See `docs/architecture-refactor-plan.md` and `docs/local-routing-verification.md` for the current split plan and routing matrix.

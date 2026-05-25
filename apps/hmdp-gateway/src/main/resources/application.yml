@@ -30,7 +30,7 @@ spring:
               uri: http://localhost:8084
               predicates:
                 - Path=/blog/**,/follow/**,/blog-comments/**
-            - id: hmdp-core-service
+            - id: hmdp-voucher-service
               uri: http://localhost:8085
               predicates:
                 - Path=/voucher/**,/voucher-order/**,/upload/**,/test/**

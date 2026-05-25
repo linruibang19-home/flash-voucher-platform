@@ -13,39 +13,38 @@ This project is being refactored from a single Spring Boot application into a cl
 - User Service now owns profile lookup, user info lookup, member-level update, and sign-in endpoints.
 - Shop Service now owns shop, shop-type, cache-aside, empty-value cache, Bloom filter warmup, and GEO index warmup.
 - Blog Service now owns blog, follow, like, and feed endpoints.
-- Core Service no longer exposes `/user`, `/shop`, `/shop-type`, `/blog`, or `/follow` endpoints.
-- Core Service now prefers Gateway-propagated `X-User-Id` for user context and keeps Redis token lookup as a compatibility fallback.
-- Redis, Kafka, Redisson, Lua-based stock deduction, idempotency, and reconciliation remain part of the core design.
+- Voucher Service owns voucher, voucher-order, seckill, reconciliation, upload, and test endpoints.
+- Voucher Service prefers Gateway-propagated `X-User-Id` for user context and keeps Redis token lookup as a compatibility fallback.
+- Redis, Kafka, Redisson, Lua-based stock deduction, idempotency, and reconciliation remain part of the voucher design.
 
 ## Target Architecture
 
 ```text
 hmdp-plus-cloud
-├─ apps
-│  └─ hmdp-gateway
-├─ services
-│  ├─ hmdp-auth-service
-│  ├─ hmdp-user-service
-│  ├─ hmdp-shop-service
-│  ├─ hmdp-core-service
-│  ├─ hmdp-blog-service
-│  ├─ hmdp-voucher-service
-│  ├─ hmdp-order-service
-│  ├─ hmdp-notify-service
-│  └─ hmdp-job-service
-├─ shared
-│  ├─ hmdp-common
-│  ├─ hmdp-parameter
-│  └─ hmdp-api
-├─ frameworks
-│  ├─ hmdp-redis-tool-framework
-│  ├─ hmdp-redisson-framework
-│  ├─ hmdp-mq-framework
-│  └─ hmdp-id-generator-framework
-├─ frontend
-│  └─ hmdp-vue3
-├─ docs
-└─ sql
+|-- apps
+|   `-- hmdp-gateway
+|-- services
+|   |-- hmdp-auth-service
+|   |-- hmdp-user-service
+|   |-- hmdp-shop-service
+|   |-- hmdp-blog-service
+|   |-- hmdp-voucher-service
+|   |-- hmdp-order-service
+|   |-- hmdp-notify-service
+|   `-- hmdp-job-service
+|-- shared
+|   |-- hmdp-common
+|   |-- hmdp-parameter
+|   `-- hmdp-api
+|-- frameworks
+|   |-- hmdp-redis-tool-framework
+|   |-- hmdp-redisson-framework
+|   |-- hmdp-mq-framework
+|   `-- hmdp-id-generator-framework
+|-- frontend
+|   `-- hmdp-vue3
+|-- docs
+`-- sql
 ```
 
 ## Service Boundaries
@@ -132,7 +131,7 @@ hmdp-plus-cloud
 ## Immediate Next Blocks
 
 1. Verify Gateway-to-Auth, Gateway-to-User, and Gateway-to-Shop traffic locally.
-2. Tighten Core Service dependencies after Blog Service extraction.
-3. Split Voucher Service while preserving Redis Lua deduction behavior.
+2. Tighten Voucher Service dependencies after removing the old Core boundary.
+3. Split Voucher Order into a dedicated Order Service when Kafka contracts are extracted.
 
 See `docs/local-routing-verification.md` for the current local routing matrix.

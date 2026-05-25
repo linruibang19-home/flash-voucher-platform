@@ -11,10 +11,10 @@
     </parent>
 
 
-    <artifactId>hmdp-core-service</artifactId>
+    <artifactId>hmdp-voucher-service</artifactId>
 
-    <name>hmdp-core-service</name>
-    <description>Legacy core service for remaining blog, voucher, order, upload, and test endpoints.</description>
+    <name>hmdp-voucher-service</name>
+    <description>Voucher, voucher order, seckill, reconciliation, upload, and test service.</description>
     <dependencies>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -134,7 +134,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>org.javaup.HmDianPingApplication</mainClass>
+                    <mainClass>org.javaup.HmdpVoucherApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
