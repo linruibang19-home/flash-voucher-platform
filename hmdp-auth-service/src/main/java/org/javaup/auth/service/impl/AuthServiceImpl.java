@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -96,6 +97,32 @@ public class AuthServiceImpl implements AuthService {
                 TimeUnit.SECONDS.convert(AuthRedisConstants.LOGIN_USER_TTL_MINUTES, TimeUnit.MINUTES),
                 TimeUnit.SECONDS);
         return Result.ok(token);
+    }
+
+    @Override
+    public Result<Void> logout(String token) {
+        if (token == null || token.isBlank()) {
+            return Result.ok();
+        }
+        stringRedisTemplate.delete(AuthRedisConstants.LOGIN_USER_KEY + token);
+        return Result.ok();
+    }
+
+    @Override
+    public Result<UserDTO> me(String token) {
+        if (token == null || token.isBlank()) {
+            return Result.fail("未登录");
+        }
+        Map<Object, Object> userMap = stringRedisTemplate.opsForHash()
+                .entries(AuthRedisConstants.LOGIN_USER_KEY + token);
+        if (userMap.isEmpty()) {
+            return Result.fail("未登录");
+        }
+        UserDTO userDTO = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);
+        if (Objects.isNull(userDTO.getId())) {
+            return Result.fail("未登录");
+        }
+        return Result.ok(userDTO);
     }
 
     private AuthUser findUserByPhone(String phone) {

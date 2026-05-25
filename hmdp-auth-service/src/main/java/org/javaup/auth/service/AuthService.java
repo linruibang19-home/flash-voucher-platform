@@ -9,4 +9,8 @@ public interface AuthService {
     Result<String> sendCode(String phone, HttpSession session);
 
     Result<String> login(LoginFormDTO loginForm, HttpSession session);
+
+    Result<Void> logout(String token);
+
+    Result<?> me(String token);
 }
