@@ -12,7 +12,8 @@ This project is being refactored from a single Spring Boot application into a cl
 - Auth Service now owns the first extracted login-code and login-token issuing endpoints.
 - User Service now owns profile lookup, user info lookup, member-level update, and sign-in endpoints.
 - Shop Service now owns shop, shop-type, cache-aside, empty-value cache, Bloom filter warmup, and GEO index warmup.
-- Core Service no longer exposes `/user`, `/shop`, or `/shop-type` endpoints; it only retains local user and shop query service support for existing blog/follow behavior.
+- Blog Service now owns blog, follow, like, and feed endpoints.
+- Core Service no longer exposes `/user`, `/shop`, `/shop-type`, `/blog`, or `/follow` endpoints.
 - Core Service now prefers Gateway-propagated `X-User-Id` for user context and keeps Redis token lookup as a compatibility fallback.
 - Redis, Kafka, Redisson, Lua-based stock deduction, idempotency, and reconciliation remain part of the core design.
 
@@ -75,6 +76,7 @@ hmdp-plus-cloud
 ### Blog Service
 
 - Own blogs, comments, likes, follows, and feed behavior.
+- Read `X-User-Id` propagated by Gateway for authenticated actions.
 
 ### Voucher Service
 
@@ -130,7 +132,7 @@ hmdp-plus-cloud
 ## Immediate Next Blocks
 
 1. Verify Gateway-to-Auth, Gateway-to-User, and Gateway-to-Shop traffic locally.
-2. Start Blog Service extraction.
-3. Move Blog/Follow endpoints out of Core Service.
+2. Tighten Core Service dependencies after Blog Service extraction.
+3. Split Voucher Service while preserving Redis Lua deduction behavior.
 
 See `docs/local-routing-verification.md` for the current local routing matrix.
