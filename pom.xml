@@ -31,6 +31,7 @@
 
     <modules>
         <module>hmdp-common</module>
+        <module>hmdp-api</module>
         <module>hmdp-core-service</module>
         <module>hmdp-redisson-framework</module>
         <module>hmdp-redis-tool-framework</module>
