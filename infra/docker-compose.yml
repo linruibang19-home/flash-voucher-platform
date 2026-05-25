@@ -1,11 +1,4 @@
-version: "3.9"
-
-# 黑马点评 微服务 Docker Compose 部署（开发/测试环境）
-# 依赖中间件：MySQL 8、Redis 7、Kafka（KRaft 模式）
-
 services:
-
-  # ─── 基础设施 ────────────────────────────────────────────────
   mysql:
     image: mysql:8.0
     container_name: hmdp-mysql
@@ -20,7 +13,8 @@ services:
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
-      retries: 5
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:7.2-alpine
@@ -32,7 +26,8 @@ services:
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
-      retries: 5
+      timeout: 5s
+      retries: 10
 
   kafka:
     image: apache/kafka:3.7.0
@@ -45,15 +40,17 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     ports:
       - "9092:9092"
     healthcheck:
       test: ["CMD", "kafka-topics.sh", "--bootstrap-server", "localhost:9092", "--list"]
       interval: 15s
-      retries: 5
+      timeout: 10s
+      retries: 10
 
-  # ─── 业务服务 ────────────────────────────────────────────────
   hmdp-gateway:
     build:
       context: ..
@@ -73,6 +70,18 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+      hmdp-auth-service:
+        condition: service_started
+      hmdp-user-service:
+        condition: service_started
+      hmdp-shop-service:
+        condition: service_started
+      hmdp-blog-service:
+        condition: service_started
+      hmdp-voucher-service:
+        condition: service_started
+      hmdp-order-service:
+        condition: service_started
 
   hmdp-auth-service:
     build:
@@ -146,6 +155,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      hmdp-user-service:
+        condition: service_started
 
   hmdp-voucher-service:
     build:
@@ -190,6 +201,10 @@ services:
         condition: service_healthy
       kafka:
         condition: service_healthy
+      hmdp-voucher-service:
+        condition: service_started
+      hmdp-notify-service:
+        condition: service_started
 
   hmdp-notify-service:
     build:
