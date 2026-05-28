@@ -30,6 +30,7 @@
 
     <modules>
         <module>apps/hmdp-gateway</module>
+        <module>apps/hmdp-registry</module>
         <module>services/hmdp-auth-service</module>
         <module>services/hmdp-user-service</module>
         <module>services/hmdp-shop-service</module>

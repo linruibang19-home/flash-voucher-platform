@@ -16,7 +16,7 @@ import java.util.List;
  *               消费方引入此模块后通过 @EnableFeignClients(basePackages = "org.javaup.api.user") 启用
  * @maintainer: lrb
  **/
-@FeignClient(name = "hmdp-user-service", url = "${hmdp.user-service.url:http://localhost:8082}")
+@FeignClient(name = "hmdp-user-service", url = "${hmdp.user-service.url:}")
 public interface UserClient {
 
     /**

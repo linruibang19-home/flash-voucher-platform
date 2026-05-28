@@ -10,47 +10,22 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>hmdp-notify-service</artifactId>
-    <name>hmdp-notify-service</name>
-    <description>Notification service: SMS, push, and email alerts for voucher events.</description>
+    <artifactId>hmdp-registry</artifactId>
+    <name>hmdp-registry</name>
+    <description>Eureka Service Registry for HMDP microservices.</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.javaup</groupId>
-            <artifactId>hmdp-parameter</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.javaup</groupId>
-            <artifactId>hmdp-redis-framework</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
-        </dependency>
-        <!-- 服务注册与发现 -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
     </dependencies>
 
@@ -61,7 +36,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>org.javaup.notify.HmdpNotifyApplication</mainClass>
+                    <mainClass>org.javaup.registry.HmdpRegistryApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

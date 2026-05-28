@@ -5,17 +5,17 @@ spring:
   application:
     name: hmdp-order-service
   datasource:
-    url: jdbc:mysql://localhost:3306/hmdp?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: root
-    password: 123456
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/hmdp?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:123456}
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
-      host: localhost
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
       port: 6379
       database: 0
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: ${prefix.distinction.name:hmdp}-order
       auto-offset-reset: earliest
@@ -27,6 +27,10 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
 
 mybatis-plus:
   configuration:
@@ -37,12 +41,21 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
 
-# 服务间调用地址
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVICE_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
+
+# 本地开发可通过此配置覆盖 Feign 服务发现（留空则走 Eureka）
 hmdp:
   voucher-service:
-    url: http://localhost:8085
+    url: ${HMDP_VOUCHER_SERVICE_URL:}
   notify-service:
-    url: http://localhost:8087
+    url: ${HMDP_NOTIFY_SERVICE_URL:}
 
 prefix:
   distinction:

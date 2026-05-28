@@ -13,7 +13,7 @@ import java.util.List;
  *               消费方通过 @EnableFeignClients(basePackages = "org.javaup.api.voucher") 启用
  * @maintainer: lrb
  **/
-@FeignClient(name = "hmdp-voucher-service", url = "${hmdp.voucher-service.url:http://localhost:8085}")
+@FeignClient(name = "hmdp-voucher-service", url = "${hmdp.voucher-service.url:}")
 public interface VoucherClient {
 
     /**

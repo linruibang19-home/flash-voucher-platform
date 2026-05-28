@@ -14,7 +14,7 @@ import java.util.Map;
  *               供 hmdp-job-service 调用
  * @maintainer: lrb
  **/
-@FeignClient(name = "hmdp-order-service", url = "${hmdp.order-service.url:http://localhost:8086}")
+@FeignClient(name = "hmdp-order-service", url = "${hmdp.order-service.url:}")
 public interface OrderClient {
 
     /**

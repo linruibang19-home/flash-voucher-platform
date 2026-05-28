@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @description: hmdp-notify-service 的 Feign 客户端契约
  * @maintainer: lrb
  **/
-@FeignClient(name = "hmdp-notify-service", url = "${hmdp.notify-service.url:http://localhost:8087}")
+@FeignClient(name = "hmdp-notify-service", url = "${hmdp.notify-service.url:}")
 public interface NotifyClient {
 
     /**

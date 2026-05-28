@@ -1,4 +1,6 @@
 services:
+
+  # ─── 基础设施 ────────────────────────────────────────────────
   mysql:
     image: mysql:8.0
     container_name: hmdp-mysql
@@ -51,6 +53,47 @@ services:
       timeout: 10s
       retries: 10
 
+  # ─── 可观测性 ────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: hmdp-prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - hmdp-voucher-service
+      - hmdp-order-service
+      - hmdp-notify-service
+      - hmdp-job-service
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: hmdp-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "admin"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+  # ─── 注册中心 ────────────────────────────────────────────────
+  hmdp-registry:
+    build:
+      context: ..
+      dockerfile: apps/hmdp-registry/Dockerfile
+    container_name: hmdp-registry
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+
+  # ─── 业务服务 ────────────────────────────────────────────────
   hmdp-gateway:
     build:
       context: ..
@@ -60,6 +103,7 @@ services:
       - "8080:8080"
     environment:
       SPRING_DATA_REDIS_HOST: redis
+      # Gateway 静态路由仍使用容器内网地址
       HMDP_AUTH_SERVICE_URL: http://hmdp-auth-service:8081
       HMDP_USER_SERVICE_URL: http://hmdp-user-service:8082
       HMDP_SHOP_SERVICE_URL: http://hmdp-shop-service:8083
@@ -70,18 +114,8 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-      hmdp-auth-service:
-        condition: service_started
-      hmdp-user-service:
-        condition: service_started
-      hmdp-shop-service:
-        condition: service_started
-      hmdp-blog-service:
-        condition: service_started
-      hmdp-voucher-service:
-        condition: service_started
-      hmdp-order-service:
-        condition: service_started
+      hmdp-registry:
+        condition: service_healthy
 
   hmdp-auth-service:
     build:
@@ -95,10 +129,13 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: "123456"
       SPRING_DATA_REDIS_HOST: redis
+      EUREKA_SERVICE_URL: http://hmdp-registry:8761/eureka/
     depends_on:
       mysql:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      hmdp-registry:
         condition: service_healthy
 
   hmdp-user-service:
@@ -113,10 +150,13 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: "123456"
       SPRING_DATA_REDIS_HOST: redis
+      EUREKA_SERVICE_URL: http://hmdp-registry:8761/eureka/
     depends_on:
       mysql:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      hmdp-registry:
         condition: service_healthy
 
   hmdp-shop-service:
@@ -131,10 +171,13 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: "123456"
       SPRING_DATA_REDIS_HOST: redis
+      EUREKA_SERVICE_URL: http://hmdp-registry:8761/eureka/
     depends_on:
       mysql:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      hmdp-registry:
         condition: service_healthy
 
   hmdp-blog-service:
@@ -149,14 +192,15 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: "123456"
       SPRING_DATA_REDIS_HOST: redis
-      HMDP_USER_SERVICE_URL: http://hmdp-user-service:8082
+      EUREKA_SERVICE_URL: http://hmdp-registry:8761/eureka/
+      # Feign 走 Eureka 服务发现，不设置 HMDP_USER_SERVICE_URL
     depends_on:
       mysql:
         condition: service_healthy
       redis:
         condition: service_healthy
-      hmdp-user-service:
-        condition: service_started
+      hmdp-registry:
+        condition: service_healthy
 
   hmdp-voucher-service:
     build:
@@ -171,12 +215,15 @@ services:
       SPRING_DATASOURCE_PASSWORD: "123456"
       SPRING_DATA_REDIS_HOST: redis
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      EUREKA_SERVICE_URL: http://hmdp-registry:8761/eureka/
     depends_on:
       mysql:
         condition: service_healthy
       redis:
         condition: service_healthy
       kafka:
+        condition: service_healthy
+      hmdp-registry:
         condition: service_healthy
 
   hmdp-order-service:
@@ -192,8 +239,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: "123456"
       SPRING_DATA_REDIS_HOST: redis
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      HMDP_VOUCHER_SERVICE_URL: http://hmdp-voucher-service:8085
-      HMDP_NOTIFY_SERVICE_URL: http://hmdp-notify-service:8087
+      EUREKA_SERVICE_URL: http://hmdp-registry:8761/eureka/
+      # Feign 走 Eureka 服务发现，不设置 HMDP_VOUCHER/NOTIFY_SERVICE_URL
     depends_on:
       mysql:
         condition: service_healthy
@@ -201,10 +248,8 @@ services:
         condition: service_healthy
       kafka:
         condition: service_healthy
-      hmdp-voucher-service:
-        condition: service_started
-      hmdp-notify-service:
-        condition: service_started
+      hmdp-registry:
+        condition: service_healthy
 
   hmdp-notify-service:
     build:
@@ -215,8 +260,11 @@ services:
       - "8087:8087"
     environment:
       SPRING_DATA_REDIS_HOST: redis
+      EUREKA_SERVICE_URL: http://hmdp-registry:8761/eureka/
     depends_on:
       redis:
+        condition: service_healthy
+      hmdp-registry:
         condition: service_healthy
 
   hmdp-job-service:
@@ -228,16 +276,15 @@ services:
       - "8088:8088"
     environment:
       SPRING_DATA_REDIS_HOST: redis
-      HMDP_VOUCHER_SERVICE_URL: http://hmdp-voucher-service:8085
-      HMDP_ORDER_SERVICE_URL: http://hmdp-order-service:8086
+      EUREKA_SERVICE_URL: http://hmdp-registry:8761/eureka/
+      # Feign 走 Eureka 服务发现，不设置 HMDP_VOUCHER/ORDER_SERVICE_URL
     depends_on:
       redis:
         condition: service_healthy
-      hmdp-voucher-service:
-        condition: service_started
-      hmdp-order-service:
-        condition: service_started
+      hmdp-registry:
+        condition: service_healthy
 
 volumes:
   mysql_data:
   redis_data:
+  grafana_data:
